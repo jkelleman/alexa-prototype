@@ -21,7 +21,7 @@ First-run setup is usually screen-driven. On a voice device, users abandon long 
 |---|---|---|
 | Ask name first | Skip personalization | Warmer, but one more turn before value |
 | Offer 3 choices (music, news, smart home) | Open-ended "what do you want?" | Faster to answer, narrower discovery |
-| Two reprompts, then exit gracefully | Loop until answered | Less frustrating, may lose some users |
+| Two reprompts on unrecognized input, then exit gracefully | Loop until answered | Less frustrating, may lose some users. Silence gets Alexa's single built-in reprompt |
 | APL screen mirrors speech | Rich screen-only content | Works on non-screen devices |
 
 ## Repo layout

@@ -22,5 +22,13 @@ const run = (ev) => new Promise((res, rej) => handler(ev, {}, (e, r) => (e ? rej
 
   r = await run(intent('NameIntent'));
   assert(r.response.reprompt);
+  // retries: two fallbacks reprompt, the third exits
+  const withAttrs = (ev, attributes) => { ev.session.attributes = attributes; return ev; };
+  r = await run(intent('AMAZON.FallbackIntent'));
+  assert.strictEqual(r.response.shouldEndSession, false);
+  r = await run(withAttrs(intent('AMAZON.FallbackIntent'), r.sessionAttributes));
+  assert.strictEqual(r.response.shouldEndSession, false);
+  r = await run(withAttrs(intent('AMAZON.FallbackIntent'), r.sessionAttributes));
+  assert.strictEqual(r.response.shouldEndSession, true);
   console.log('all passed');
 })().catch((e) => { console.error(e); process.exit(1); });

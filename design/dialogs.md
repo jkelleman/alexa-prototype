@@ -12,15 +12,17 @@ Scores are self-scored against `eval/rubric.md`.
 
 One question per turn; ends with an explicit next step.
 
-## 2. Recovery from silence (8/10)
+## 2. Recovery from unrecognized input (8/10)
 
-> A: What should I call you?  
-> (no response)  
-> A: I didn't hear that. You can say a name, like "Sam."  
-> (no response)  
-> A: No problem. Say "Alexa, open onboarding" any time.
+> A: Hi, I'm Alexa. What should I call you?  
+> U: blorp  
+> A: Sorry, I didn't get that. What should I call you?  
+> U: blorp  
+> A: Sorry, I didn't get that. What should I call you?  
+> U: blorp  
+> A: No problem. Say "open onboarding demo" any time.
 
-Rephrases with an example, then exits without blame. Loses a point for no third option.
+Two reprompts, then a graceful exit with no blame (transcript from `skill/lambda/chat.js`). Silence is different: Alexa sends one reprompt and then ends the session itself, so the skill can't add more. Loses a point for no third option.
 
 ## 3. Misrecognition (8/10)
 
