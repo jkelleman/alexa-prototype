@@ -1,0 +1,27 @@
+{
+  "type": "APL",
+  "version": "2023.3",
+  "mainTemplate": {
+    "items": [
+      {
+        "type": "Container",
+        "width": "100vw",
+        "height": "100vh",
+        "justifyContent": "center",
+        "alignItems": "center",
+        "items": [
+          { "type": "Text", "text": "Which do you prefer?", "fontSize": "40dp" },
+          {
+            "type": "Container",
+            "direction": "row",
+            "items": [
+              { "type": "TouchWrapper", "onPress": { "type": "SendEvent", "arguments": ["music"] }, "item": { "type": "Text", "text": "Music", "padding": "16dp" } },
+              { "type": "TouchWrapper", "onPress": { "type": "SendEvent", "arguments": ["news"] }, "item": { "type": "Text", "text": "News", "padding": "16dp" } },
+              { "type": "TouchWrapper", "onPress": { "type": "SendEvent", "arguments": ["smart home"] }, "item": { "type": "Text", "text": "Smart home", "padding": "16dp" } }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "onboarding demo",
+      "intents": [
+        { "name": "AMAZON.HelpIntent", "samples": [] },
+        { "name": "AMAZON.StopIntent", "samples": [] },
+        { "name": "AMAZON.CancelIntent", "samples": [] },
+        { "name": "AMAZON.FallbackIntent", "samples": [] },
+        {
+          "name": "NameIntent",
+          "slots": [{ "name": "name", "type": "AMAZON.FirstName" }],
+          "samples": ["{name}", "my name is {name}", "call me {name}"]
+        },
+        {
+          "name": "InterestIntent",
+          "slots": [{ "name": "interest", "type": "InterestType" }],
+          "samples": ["{interest}", "I prefer {interest}", "I like {interest}"]
+        }
+      ],
+      "types": [
+        {
+          "name": "InterestType",
+          "values": [
+            { "name": { "value": "music" } },
+            { "name": { "value": "news" } },
+            { "name": { "value": "smart home" } }
+          ]
+        }
+      ]
+    }
+  }
+}

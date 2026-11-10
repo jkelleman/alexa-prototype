@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="240" viewBox="0 0 1200 240">
+  <rect width="1200" height="240" fill="#0b1b2b"/>
+  <circle cx="160" cy="120" r="56" fill="#00caff"/>
+  <text x="260" y="115" font-family="sans-serif" font-size="52" fill="#fff" font-weight="bold">Voice-first onboarding</text>
+  <text x="260" y="165" font-family="sans-serif" font-size="26" fill="#9fb3c8">Alexa prototype</text>
+</svg>
