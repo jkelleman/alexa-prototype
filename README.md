@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/banner.svg" alt="Voice-first onboarding prototype" width="100%"></p>
+<p align="center"><img src="assets/banner.svg" alt="First Words: voice-first onboarding prototype" width="100%"></p>
 
 <p align="center">
   <a href="https://github.com/jkelleman/alexa-prototype/actions/workflows/ci.yml"><img src="https://github.com/jkelleman/alexa-prototype/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
@@ -8,9 +8,9 @@
   <img src="https://img.shields.io/badge/APL-2023.3%20(untested)-lightgrey" alt="APL 2023.3, untested">
 </p>
 
-# Voice-first onboarding prototype
+# First Words
 
-A prototype of a voice-first onboarding conversation for Alexa, with an Echo Show multimodal companion.
+**A voice-first onboarding prototype.** A prototype of a voice-first onboarding conversation for Alexa, with an Echo Show multimodal companion.
 
 ## Problem
 
