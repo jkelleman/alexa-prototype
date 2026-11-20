@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#232f3e">
 <title>First Words · Voice-first onboarding demo</title>
 <meta name="description" content="Interactive demo of a voice-first onboarding conversation for Alexa, with a smart-display screen, recovery patterns, and design notes on every turn.">
 <meta property="og:title" content="First Words · Voice-first onboarding demo">
@@ -13,25 +14,33 @@
 </head>
 <body>
 <header class="site-header">
-  <div>
-    <h1>First Words</h1>
-    <p class="tagline">A voice-first onboarding conversation for Alexa, with a smart-display screen that follows along.</p>
+  <div class="bar">
+    <a class="brand" href="./" aria-label="First Words home"><span class="ring" aria-hidden="true"></span>First Words</a>
+    <nav aria-label="Project links">
+      <a href="#how">How it works</a>
+      <a href="https://github.com/jkelleman/alexa-prototype">Code on GitHub</a>
+    </nav>
   </div>
-  <nav aria-label="Project links">
-    <a href="https://github.com/jkelleman/alexa-prototype">Code on GitHub</a>
-    <a href="#how">How it works</a>
-  </nav>
+  <div class="intro">
+    <p class="eyebrow">Voice-first onboarding prototype</p>
+    <h1>A first conversation with Alexa, designed for the ear.</h1>
+    <p class="tagline">A new user shares a name (or skips it), picks what they want first, and leaves knowing exactly what to say next. The smart-display screen follows along.</p>
+  </div>
 </header>
 
 <main class="layout">
   <section class="device-col" aria-label="Device">
     <div class="device" id="device">
-      <div class="screen" id="screen">
-        <p class="screen-title" id="screen-title">Press Start to meet your assistant</p>
-        <p class="screen-hint" id="screen-hint">Talk, type, or tap. Or watch a scenario.</p>
-        <div class="screen-choices" id="screen-choices"></div>
+      <div class="display">
+        <div class="screen" id="screen">
+          <p class="screen-title" id="screen-title">Press Start to meet your assistant</p>
+          <p class="screen-hint" id="screen-hint">Talk, type, or tap. Or watch a scenario.</p>
+          <div class="screen-choices" id="screen-choices"></div>
+          <div class="lightbar" id="lightbar" aria-hidden="true"></div>
+        </div>
+        <span class="camera" aria-hidden="true"></span>
       </div>
-      <div class="lightbar" id="lightbar" aria-hidden="true"></div>
+      <div class="base" aria-hidden="true"></div>
     </div>
 
     <div class="controls">
