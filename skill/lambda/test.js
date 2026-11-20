@@ -76,6 +76,25 @@ const tests = {
       }
     }
   },
+  'a session can open with an intent': () => {
+    const r = FirstWords.next(null, { type: 'interest', value: 'news' });
+    assert.match(r.say, /news it is/);
+    const n = FirstWords.next(null, { type: 'name', value: 'Sam' });
+    assert.match(n.say, /Nice to meet you, Sam/);
+  },
+  'each new prompt gets its own silence reprompt': () => {
+    for (const inputs of [['', 'help', ''], ['Sam', '', 'neus', '']]) {
+      const r = last(talk(inputs));
+      assert.strictEqual(r.end, false, `${JSON.stringify(inputs)} ended early`);
+    }
+  },
+  'browser understands every SkipIntent sample': () => {
+    const model = require('../interactionModels/custom/en-US.json');
+    const skip = model.interactionModel.languageModel.intents.find((i) => i.name === 'SkipIntent');
+    for (const sample of skip.samples) {
+      assert.strictEqual(FirstWords.parse(sample, FirstWords.start().state).type, 'skip', sample);
+    }
+  },
   'jumping ahead is allowed': () => {
     assert.match(last(talk(['news'])).say, /news it is/);
   },
@@ -129,6 +148,10 @@ const skillTests = {
     let r = await call(base({ type: 'LaunchRequest' }, {}, true));
     r = await call(intent('SkipIntent', {}, r.sessionAttributes, true));
     r = await call(base({ type: 'Alexa.Presentation.APL.UserEvent', arguments: ['News'] }, r.sessionAttributes, true));
+    assert.match(say(r), /news it is/);
+  },
+  'skill: a one-shot request skips straight to the answer': async () => {
+    const r = await call(intent('InterestIntent', slot('interest', 'news')));
     assert.match(say(r), /news it is/);
   },
   'skill: voice-only devices get no screen': async () => {

@@ -161,8 +161,15 @@
    *                | 'help' | 'stop' | 'unknown' | 'silence', value? }
    */
   function next(state, event) {
-    if (!state || event.type === 'launch') return start();
-    if (state.step === 'done' || state.step === 'exited') return start();
+    if (event.type === 'launch') return start();
+    // A session can open with an intent ("ask first words for news"), or a new
+    // session can follow a finished one. Start fresh, then handle the event.
+    if (!state || state.step === 'done' || state.step === 'exited') {
+      state = start().state;
+      if (event.type === 'silence') return start();
+    }
+    // Any real input gives the next silence a fresh reprompt, as on Alexa.
+    if (event.type !== 'silence') state = { ...state, silences: 0 };
 
     switch (event.type) {
       case 'stop':
@@ -248,7 +255,8 @@
     if (/^(help|what can you do|what are my options|options)$/.test(t)) return { type: 'help' };
     if (/^(yes|yeah|yep|yup|correct|right|that's right|sure)$/.test(t)) return { type: 'yes' };
     if (/^(no|nope|nah|wrong|not really)$/.test(t)) return { type: state && state.step === 'name' ? 'skip' : 'no' };
-    if (/^(skip|pass|i'd rather not( say)?|rather not( say)?|no thanks|i don't want to( say)?)$/.test(t)) return { type: 'skip' };
+    // Kept in sync with SkipIntent samples in the interaction model.
+    if (/^(skip|skip that|pass|i'd rather not( say)?|rather not( say)?|no thanks|i don't want to( say)?)$/.test(t)) return { type: 'skip' };
 
     const step = state && state.step;
     if (step === 'name') {

@@ -12,6 +12,7 @@
   let current = null;   // last engine result
   let runId = 0;        // cancels an in-flight scenario when something new starts
   let voice = null;
+  let recognizer = null; // active speech recognition, if any
 
   // ---------- voice output
   function pickVoice() {
@@ -112,13 +113,16 @@
   }
 
   // ---------- conversation
-  async function agentTurn(result) {
+  // Returns false if a newer conversation started while this turn was speaking.
+  async function agentTurn(result, id = runId) {
+    if (id !== runId) return false;
     current = result;
     renderScreen(result.screen);
     if (result.say) addTurn('agent', result.say, result.notes);
     else addSystem('(No response. The session closes after a second silence.)');
     setInputEnabled(false);
     await speak(result.say);
+    if (id !== runId) return false;
     if (result.end) {
       addSystem('Session ended.');
       $('start').textContent = 'Start over';
@@ -126,44 +130,50 @@
     } else {
       setInputEnabled(true);
     }
+    return true;
   }
 
-  async function userTurn(text, how) {
-    if (!current || current.end) return;
+  async function userTurn(text, how, id = runId) {
+    if (id !== runId || !current || current.end) return;
     const event = FW.parse(text, current.state);
     addTurn('user', text || '(silence)', null, how);
-    await agentTurn(FW.next(current.state, event));
-    if (!current.end && how === 'type') $('type-input').focus();
+    const ok = await agentTurn(FW.next(current.state, event), id);
+    if (ok && !current.end && how === 'type') $('type-input').focus();
+  }
+
+  // Start a new conversation: cancel speech, listening, and any scenario in flight.
+  function newRun() {
+    runId++;
+    if (canSpeak) speechSynthesis.cancel();
+    if (recognizer) { recognizer.abort(); recognizer = null; }
+    return runId;
   }
 
   async function begin() {
-    runId++;
-    if (canSpeak) speechSynthesis.cancel();
+    const id = newRun();
     $('transcript').replaceChildren();
     $('start').hidden = true;
-    await agentTurn(FW.start());
-    if (!current.end) $('type-input').focus();
+    for (const b of document.querySelectorAll('.scenario-list button')) b.setAttribute('aria-pressed', 'false');
+    if (await agentTurn(FW.start(), id) && !current.end) $('type-input').focus();
   }
 
   // ---------- scenarios
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
   async function play(scenario, limit = Infinity) {
-    const id = ++runId;
-    if (canSpeak) speechSynthesis.cancel();
+    const id = newRun();
     $('transcript').replaceChildren();
     $('start').hidden = true;
     addSystem(`Scenario: ${scenario.title}. ${scenario.blurb}`);
     for (const b of document.querySelectorAll('.scenario-list button')) b.setAttribute('aria-pressed', String(b.dataset.id === scenario.id));
-    await agentTurn(FW.start());
+    if (!await agentTurn(FW.start(), id)) return;
     for (const input of scenario.inputs.slice(0, limit)) {
-      if (id !== runId) return;
       setInputEnabled(false);
       await wait(reducedMotion ? 200 : 700);
       if (id !== runId) return;
       const event = FW.parse(input, current.state);
       addTurn('user', input || '(silence)', null, 'scenario');
-      await agentTurn(FW.next(current.state, event));
+      if (!await agentTurn(FW.next(current.state, event), id)) return;
       if (current.end) break;
     }
   }
@@ -186,6 +196,7 @@
   function listenOnce() {
     return new Promise((resolve) => {
       const r = new Recognition();
+      recognizer = r;
       r.lang = 'en-US';
       r.interimResults = false;
       r.maxAlternatives = 1;
@@ -193,7 +204,7 @@
       setLight('listening');
       r.onresult = (e) => { heard = e.results[0][0].transcript; };
       r.onerror = () => {};
-      r.onend = () => { setLight('idle'); resolve(heard); };
+      r.onend = () => { if (recognizer === r) recognizer = null; setLight('idle'); resolve(heard); };
       r.start();
     });
   }
@@ -204,10 +215,12 @@
     $('talk').textContent = '🎙 Talk';
     $('talk').addEventListener('click', async () => {
       if (!current || current.end) return;
+      const id = runId;
       if (canSpeak) speechSynthesis.cancel();
       setInputEnabled(false);
       const heard = await listenOnce();
-      await userTurn(heard.trim(), 'voice');
+      if (id !== runId) return; // a new conversation started while listening
+      await userTurn(heard.trim(), 'voice', id);
     });
   }
 
