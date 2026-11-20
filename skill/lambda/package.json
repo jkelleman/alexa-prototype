@@ -1,7 +1,12 @@
 {
-  "name": "onboarding-skill",
-  "version": "0.1.0",
+  "name": "first-words-skill",
+  "version": "0.2.0",
   "main": "index.js",
-  "scripts": { "test": "node test.js" },
-  "dependencies": { "ask-sdk-core": "^2.14.0" }
+  "scripts": {
+    "test": "node test.js",
+    "transcripts": "node chat.js --write"
+  },
+  "dependencies": {
+    "ask-sdk-core": "^2.14.0"
+  }
 }

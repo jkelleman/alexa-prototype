@@ -1,15 +1,17 @@
-# Minimal onboarding skill
+# First Words skill
 
-Node.js, ASK SDK v2. Flow: launch, ask name, ask interest, finish. Two reprompts on unrecognized input, then exits.
+Node.js, ASK SDK v2. The conversation itself lives in `lambda/dialog.js`, shared with the web demo. `lambda/index.js` translates Alexa requests into engine events and sends the APL screen on devices that have one.
 
-- `interactionModels/custom/en-US.json`: invocation `onboarding demo`, intents `NameIntent`, `InterestIntent`
-- `lambda/index.js`: handlers
+- `interactionModels/custom/en-US.json`: invocation `first words`; intents `NameIntent`, `InterestIntent`, `SkipIntent`, plus built-in Help, Yes, No, Stop, Cancel, Fallback, and NavigateHome; synonyms for each interest
+- `lambda/dialog.js`: the dialog engine (copy, recovery, screen data)
+- `lambda/index.js`: request handler
+- `lambda/apl/screen.json`: APL screen template
 
 ## Run
 
 1. `cd lambda && npm install && npm test`
-   - `node chat.js` prints sample transcripts locally, without Alexa (names are a small stand-in list, not `AMAZON.FirstName`).
-2. Paste `en-US.json` into the Developer Console build tab; paste `lambda/index.js` (with `node_modules`) or deploy via ASK CLI.
-3. In the Test tab say: "open onboarding demo".
+   - `npm run transcripts` regenerates `design/transcripts.md` from the engine.
+2. Paste `en-US.json` into the Developer Console build tab; deploy the `lambda` folder (with `node_modules`) or use the ASK CLI. Turn on the APL interface in the console to get the screen.
+3. In the Test tab say: "open first words".
 
 Not yet tested in the simulator.

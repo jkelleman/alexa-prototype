@@ -1,0 +1,36 @@
+{
+  "type": "APL",
+  "version": "2023.3",
+  "description": "First Words screen. The title mirrors what Alexa just said; buttons are the same choices the voice offers. Untested in the simulator.",
+  "mainTemplate": {
+    "parameters": ["payload"],
+    "items": [
+      {
+        "type": "Container",
+        "width": "100vw",
+        "height": "100vh",
+        "justifyContent": "center",
+        "alignItems": "center",
+        "paddingLeft": "48dp",
+        "paddingRight": "48dp",
+        "items": [
+          { "type": "Text", "text": "${payload.screen.title}", "fontSize": "40dp", "textAlign": "center" },
+          { "type": "Text", "text": "${payload.screen.hint}", "fontSize": "24dp", "color": "#9fb3c8", "paddingTop": "16dp", "when": "${payload.screen.hint}" },
+          {
+            "type": "Container",
+            "direction": "row",
+            "paddingTop": "32dp",
+            "data": "${payload.screen.choices}",
+            "items": [
+              {
+                "type": "TouchWrapper",
+                "onPress": { "type": "SendEvent", "arguments": ["${data}"] },
+                "item": { "type": "Text", "text": "${data}", "fontSize": "28dp", "paddingLeft": "24dp", "paddingRight": "24dp", "paddingTop": "12dp", "paddingBottom": "12dp" }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

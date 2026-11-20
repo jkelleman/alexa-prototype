@@ -13,3 +13,7 @@ jobs:
           node-version: 20
       - run: npm install
       - run: npm test
+      - name: Transcripts match the engine
+        run: npm run transcripts && git diff --exit-code ../../design/transcripts.md
+      - name: Web demo scripts parse
+        run: node --check ../../app.js && node --check dialog.js
