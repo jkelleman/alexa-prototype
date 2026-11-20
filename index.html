@@ -3,18 +3,86 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Voice-first onboarding prototype</title>
+<title>First Words · Voice-first onboarding demo</title>
+<meta name="description" content="Interactive demo of a voice-first onboarding conversation for Alexa, with a smart-display screen, recovery patterns, and design notes on every turn.">
+<meta property="og:title" content="First Words · Voice-first onboarding demo">
+<meta property="og:description" content="Talk, type, or tap through a voice-first onboarding conversation. Every turn is tagged with the design principle behind it.">
+<meta property="og:image" content="assets/demo-screenshot.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='14' width='24' height='4' rx='2' fill='%2300caff'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main>
-  <h1>Voice-first onboarding</h1>
-  <div id="orb" aria-hidden="true"></div>
-  <p id="prompt" aria-live="polite">Press Start to begin.</p>
-  <p id="heard" aria-live="polite"></p>
-  <button id="start">Start</button>
-  <button id="skip" hidden>Skip</button>
+<header class="site-header">
+  <div>
+    <h1>First Words</h1>
+    <p class="tagline">A voice-first onboarding conversation for Alexa, with a smart-display screen that follows along.</p>
+  </div>
+  <nav aria-label="Project links">
+    <a href="https://github.com/jkelleman/alexa-prototype">Code on GitHub</a>
+    <a href="#how">How it works</a>
+  </nav>
+</header>
+
+<main class="layout">
+  <section class="device-col" aria-label="Device">
+    <div class="device" id="device">
+      <div class="screen" id="screen">
+        <p class="screen-title" id="screen-title">Press Start to meet your assistant</p>
+        <p class="screen-hint" id="screen-hint">Talk, type, or tap. Or watch a scenario.</p>
+        <div class="screen-choices" id="screen-choices"></div>
+      </div>
+      <div class="lightbar" id="lightbar" aria-hidden="true"></div>
+    </div>
+
+    <div class="controls">
+      <button class="primary" id="start">Start</button>
+      <button id="talk" hidden aria-describedby="talk-note">🎙 Talk</button>
+      <form id="type-form" class="type-form" autocomplete="off">
+        <label class="sr-only" for="type-input">Type your reply</label>
+        <input id="type-input" type="text" placeholder="Type a reply…" disabled>
+        <button type="submit" id="send" disabled>Send</button>
+      </form>
+      <div class="toggles">
+        <label><input type="checkbox" id="sound" checked> Voice</label>
+        <label><input type="checkbox" id="notes-toggle" checked> Design notes</label>
+      </div>
+      <p class="fine" id="talk-note" hidden>Speech recognition runs in your browser's speech service. Nothing is stored by this page.</p>
+    </div>
+  </section>
+
+  <section class="transcript-col" aria-label="Conversation">
+    <div class="scenarios">
+      <h2>Watch a scenario</h2>
+      <div class="scenario-list" id="scenarios"></div>
+    </div>
+    <ol class="transcript" id="transcript" aria-live="polite" aria-label="Transcript"></ol>
+  </section>
 </main>
+
+<section class="how" id="how">
+  <h2>How it works</h2>
+  <div class="how-grid">
+    <div>
+      <h3>One engine, two surfaces</h3>
+      <p>This page and the Alexa skill call the same dialog engine (<code>skill/lambda/dialog.js</code>). The copy, recovery rules, and screen content you see here are what the skill would say. Tests check the design principles directly: one question per turn, rephrase on recovery, and a screen that never shows a choice the voice didn't say.</p>
+    </div>
+    <div>
+      <h3>Principles</h3>
+      <ol class="principles">
+        <li>One question per turn.</li>
+        <li>Only claim what is built or what the user said.</li>
+        <li>Recover from silence and misrecognition without blame.</li>
+        <li>The screen supports the voice and never carries information the voice lacks.</li>
+      </ol>
+    </div>
+    <div>
+      <h3>Honest status</h3>
+      <p>The skill passes local tests but hasn't been deployed or tested in the Alexa simulator. The screen design is untested on a device. Names come from a short list in this demo; say “call me ___” for any name. Independent portfolio project, not affiliated with or endorsed by Amazon.</p>
+    </div>
+  </div>
+</section>
+
+<script src="skill/lambda/dialog.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

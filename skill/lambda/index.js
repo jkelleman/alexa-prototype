@@ -1,75 +1,64 @@
 const Alexa = require('ask-sdk-core');
+const FirstWords = require('./dialog');
+const screenDocument = require('./apl/screen.json');
 
-const ASK_NAME = "Hi, I'm Alexa. What should I call you?";
-
-const reply = (h, speech, reprompt) =>
-  h.responseBuilder.speak(speech).reprompt(reprompt || speech).getResponse();
-
-const MAX_RETRIES = 2;
-
-// Counts failed attempts per session; after MAX_RETRIES the skill exits gracefully.
-const retry = (h, speech) => {
-  const attrs = h.attributesManager.getSessionAttributes();
-  attrs.retries = (attrs.retries || 0) + 1;
-  h.attributesManager.setSessionAttributes(attrs);
-  if (attrs.retries > MAX_RETRIES) {
-    return h.responseBuilder.speak('No problem. Say "open onboarding demo" any time.').withShouldEndSession(true).getResponse();
+// Translate an Alexa request into a dialog engine event.
+function toEvent(envelope) {
+  const type = Alexa.getRequestType(envelope);
+  if (type === 'LaunchRequest') return { type: 'launch' };
+  if (type === 'Alexa.Presentation.APL.UserEvent') {
+    const choice = String((envelope.request.arguments || [])[0] || '').toLowerCase();
+    if (choice === 'skip' || choice === 'yes' || choice === 'no') return { type: choice };
+    return { type: 'interest', value: choice };
   }
-  return reply(h, speech);
-};
+  if (type !== 'IntentRequest') return null;
 
-const resetRetries = (h) => {
-  const attrs = h.attributesManager.getSessionAttributes();
-  attrs.retries = 0;
-  h.attributesManager.setSessionAttributes(attrs);
-};
+  switch (Alexa.getIntentName(envelope)) {
+    case 'NameIntent': {
+      const name = Alexa.getSlotValue(envelope, 'name');
+      return name ? { type: 'name', value: name } : { type: 'unknown' };
+    }
+    case 'InterestIntent': {
+      // Prefer the resolved value; fall back to what was heard, which the
+      // engine confirms ("Did you say news?") when it's only a close match.
+      const slot = Alexa.getSlot(envelope, 'interest');
+      const resolved = slot && slot.resolutions && slot.resolutions.resolutionsPerAuthority
+        && slot.resolutions.resolutionsPerAuthority.find((r) => r.status && r.status.code === 'ER_SUCCESS_MATCH');
+      const value = resolved ? resolved.values[0].value.name : slot && slot.value;
+      return value ? { type: 'interest', value } : { type: 'unknown' };
+    }
+    case 'SkipIntent': return { type: 'skip' };
+    case 'AMAZON.YesIntent': return { type: 'yes' };
+    case 'AMAZON.NoIntent': return { type: 'no' };
+    case 'AMAZON.HelpIntent': return { type: 'help' };
+    case 'AMAZON.StopIntent':
+    case 'AMAZON.CancelIntent':
+    case 'AMAZON.NavigateHomeIntent': return { type: 'stop' };
+    default: return { type: 'unknown' }; // includes AMAZON.FallbackIntent
+  }
+}
 
-const Launch = {
-  canHandle: (h) => Alexa.getRequestType(h.requestEnvelope) === 'LaunchRequest',
-  handle: (h) => reply(h, ASK_NAME),
-};
+const hasScreen = (envelope) => Boolean(Alexa.getSupportedInterfaces(envelope)['Alexa.Presentation.APL']);
 
-const Name = {
-  canHandle: (h) => Alexa.getIntentName(h.requestEnvelope) === 'NameIntent',
+const Conversation = {
+  canHandle: (h) => toEvent(h.requestEnvelope) !== null,
   handle: (h) => {
-    const name = Alexa.getSlotValue(h.requestEnvelope, 'name');
-    if (!name) return retry(h, 'I didn\'t catch that. You can say a name, like "Sam."');
     const attrs = h.attributesManager.getSessionAttributes();
-    attrs.name = name;
-    attrs.retries = 0;
-    h.attributesManager.setSessionAttributes(attrs);
-    return reply(h, `Nice to meet you, ${name}. Do you want music, news, or smart home?`);
+    const result = FirstWords.next(attrs.state || null, toEvent(h.requestEnvelope));
+    h.attributesManager.setSessionAttributes({ state: result.state });
+
+    const rb = h.responseBuilder.speak(result.say);
+    if (!result.end) rb.reprompt(result.reprompt);
+    if (hasScreen(h.requestEnvelope) && result.screen) {
+      rb.addDirective({
+        type: 'Alexa.Presentation.APL.RenderDocument',
+        token: 'firstWordsScreen',
+        document: screenDocument,
+        datasources: { payload: { screen: { hint: '', choices: [], ...result.screen } } },
+      });
+    }
+    return rb.withShouldEndSession(result.end).getResponse();
   },
-};
-
-const Interest = {
-  canHandle: (h) => Alexa.getIntentName(h.requestEnvelope) === 'InterestIntent',
-  handle: (h) => {
-    const interest = Alexa.getSlotValue(h.requestEnvelope, 'interest');
-    if (!interest) return retry(h, 'Please say music, news, or smart home.');
-    resetRetries(h);
-    return h.responseBuilder.speak(`Great. I'll remember ${interest}. That's all for now.`).withShouldEndSession(true).getResponse();
-  },
-};
-
-const Help = {
-  canHandle: (h) => Alexa.getIntentName(h.requestEnvelope) === 'AMAZON.HelpIntent',
-  handle: (h) => reply(h, 'Right now I can help with music, news, or smart home. Which one?'),
-};
-
-const Fallback = {
-  canHandle: (h) => Alexa.getIntentName(h.requestEnvelope) === 'AMAZON.FallbackIntent',
-  handle: (h) => {
-    const { name } = h.attributesManager.getSessionAttributes();
-    return retry(h, name
-      ? 'Sorry, I didn\'t get that. Do you want music, news, or smart home?'
-      : 'Sorry, I didn\'t get that. What should I call you?');
-  },
-};
-
-const Stop = {
-  canHandle: (h) => ['AMAZON.StopIntent', 'AMAZON.CancelIntent'].includes(Alexa.getIntentName(h.requestEnvelope)),
-  handle: (h) => h.responseBuilder.speak('No problem. Say "open onboarding demo" any time.').getResponse(),
 };
 
 const SessionEnded = {
@@ -79,10 +68,14 @@ const SessionEnded = {
 
 const ErrorHandler = {
   canHandle: () => true,
-  handle: (h, e) => { console.log(e); return reply(h, 'Sorry, something went wrong. Please try again.'); },
+  handle: (h, e) => {
+    console.log(e);
+    return h.responseBuilder.speak('Sorry, something went wrong. Please try again.').reprompt('Please try again.').getResponse();
+  },
 };
 
+exports.toEvent = toEvent;
 exports.handler = Alexa.SkillBuilders.custom()
-  .addRequestHandlers(Launch, Name, Interest, Help, Fallback, Stop, SessionEnded)
+  .addRequestHandlers(Conversation, SessionEnded)
   .addErrorHandlers(ErrorHandler)
   .lambda();
