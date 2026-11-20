@@ -14,13 +14,14 @@
   --alexa: #00caff;
   --alexa-deep: #0a6cff;
   --link: #007185;
-  --focus: #00caff;
+  --focus: #0050b5; /* 6:1 on the light page; cyan is used on dark surfaces */
   font-family: "Amazon Ember", "Helvetica Neue", Arial, system-ui, sans-serif;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--page); color: var(--ink); line-height: 1.5; }
 a { color: var(--link); }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+.site-header .bar :focus-visible, .screen :focus-visible { outline-color: var(--alexa); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* Header */
@@ -41,7 +42,7 @@ a { color: var(--link); }
 .device { display: grid; justify-items: center; }
 .display { position: relative; width: 100%; background: #0b0e12; border-radius: 22px; padding: 14px; box-shadow: 0 1px 0 #2a3038 inset, 0 18px 40px rgba(15, 17, 17, .28); z-index: 1; }
 .camera { position: absolute; top: 5px; right: 26px; width: 5px; height: 5px; border-radius: 50%; background: #1d232b; }
-.screen { position: relative; overflow: hidden; aspect-ratio: 16 / 10; border-radius: 10px; background: radial-gradient(130% 120% at 15% 0%, #12406e 0%, #0b2744 50%, #071628 100%); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px 24px 34px; gap: 8px; }
+.screen { position: relative; overflow: hidden; aspect-ratio: 16 / 10; min-height: min-content; border-radius: 10px; background: radial-gradient(130% 120% at 15% 0%, #12406e 0%, #0b2744 50%, #071628 100%); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px 24px 34px; gap: 8px; }
 .screen-title { margin: 0; font-size: clamp(1.3rem, 2.6vw, 2.05rem); font-weight: 700; line-height: 1.22; letter-spacing: -0.01em; }
 .screen-hint { margin: 0; color: #b9cbe0; font-size: clamp(.95rem, 1.6vw, 1.15rem); min-height: 1.4em; }
 .screen-choices { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 12px; }
