@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/banner.svg" alt="First Words: voice-first onboarding prototype" width="100%"></p>
+<p align="center"><a href="https://jkelleman.github.io/alexa-prototype/"><img src="assets/banner.png" alt="First Words: a voice-first onboarding conversation for Alexa, with a smart-display screen asking: Did you say news?" width="100%"></a></p>
 
 <p align="center">
   <a href="https://github.com/jkelleman/alexa-prototype/actions/workflows/ci.yml"><img src="https://github.com/jkelleman/alexa-prototype/actions/workflows/ci.yml/badge.svg" alt="CI"></a>

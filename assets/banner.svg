@@ -1,10 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="260" viewBox="0 0 1200 260" role="img" aria-label="First Words, a voice-first onboarding prototype, portfolio piece for an Amazon Robotics application">
-  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b1b2b"/><stop offset="1" stop-color="#143a5c"/></linearGradient></defs>
-  <rect width="1200" height="260" fill="url(#g)"/>
-  <g fill="none" stroke="#00caff" stroke-width="6" stroke-linecap="round" opacity=".9">
-    <path d="M80 130 v0"/><path d="M110 105 v50"/><path d="M140 80 v100"/><path d="M170 110 v40"/><path d="M200 90 v80"/><path d="M230 115 v30"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-label="First Words: a voice-first onboarding conversation for Alexa, with a smart-display screen asking: Did you say news?">
+  <defs>
+    <radialGradient id="scr" cx="0.15" cy="0" r="1.3"><stop offset="0" stop-color="#12406e"/><stop offset=".5" stop-color="#0b2744"/><stop offset="1" stop-color="#071628"/></radialGradient>
+    <pattern id="fabric" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#2b2f35"/><circle cx="2" cy="2" r="1" fill="#ffffff" fill-opacity=".09"/></pattern>
+    <filter id="sh" x="-10%" y="-10%" width="120%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#0f1111" flood-opacity=".28"/></filter>
+    <filter id="glow" x="-5%" y="-300%" width="110%" height="700%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1280" height="400" fill="#eaeded"/>
+  <rect width="1280" height="56" fill="#232f3e"/>
+  <circle cx="70" cy="28" r="11" fill="none" stroke="#00caff" stroke-width="3.5"/>
+  <text x="92" y="36" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#ffffff">First Words</text>
+  <text x="1216" y="35" text-anchor="end" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" fill="#ffffff" fill-opacity=".85">Voice-first onboarding prototype</text>
+
+  <g font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+    <text x="64" y="122" font-size="15" font-weight="700" letter-spacing="2.4" fill="#007185">CONVERSATION DESIGN FOR ALEXA + ECHO SHOW</text>
+    <text x="64" y="176" font-size="44" font-weight="700" fill="#0f1111">A first conversation</text>
+    <text x="64" y="228" font-size="44" font-weight="700" fill="#0f1111">with Alexa, designed</text>
+    <text x="64" y="280" font-size="44" font-weight="700" fill="#0f1111">for the ear.</text>
+    <rect x="64" y="310" width="210" height="44" rx="22" fill="#ffa41c" stroke="#ff8f00"/>
+    <text x="169" y="338" text-anchor="middle" font-size="18" font-weight="700" fill="#0f1111">Try the live demo</text>
+    <text x="294" y="338" font-size="17" fill="#565959">Talk, type, or tap. 6 scenarios.</text>
   </g>
-  <text x="290" y="118" font-family="Helvetica,Arial,sans-serif" font-size="54" font-weight="bold" fill="#fff">First Words</text>
-  <text x="290" y="160" font-family="Helvetica,Arial,sans-serif" font-size="26" fill="#9fb3c8">Voice-first onboarding: conversation design for Alexa and Echo Show</text>
-  <text x="290" y="205" font-family="Helvetica,Arial,sans-serif" font-size="22" fill="#00caff">Portfolio piece for an Amazon Robotics application</text>
+
+  <g filter="url(#sh)">
+    <path d="M700 332 h476 a8 8 0 0 1 8 8 v4 q0 36 -40 36 h-412 q-40 0 -40 -36 v-4 a8 8 0 0 1 8 -8 z" fill="url(#fabric)"/>
+    <rect x="712" y="82" width="460" height="262" rx="20" fill="#0b0e12"/>
+  </g>
+  <circle cx="1150" cy="90" r="2.5" fill="#1d232b"/>
+  <rect x="724" y="96" width="436" height="236" rx="9" fill="url(#scr)"/>
+  <g font-family="Helvetica Neue, Helvetica, Arial, sans-serif" text-anchor="middle">
+    <text x="942" y="196" font-size="32" font-weight="700" fill="#ffffff">Did you say “news”?</text>
+    <rect x="852" y="226" width="80" height="40" rx="20" fill="#ffffff" fill-opacity=".06" stroke="#ffffff" stroke-opacity=".7" stroke-width="2"/>
+    <text x="892" y="252" font-size="18" font-weight="600" fill="#ffffff">Yes</text>
+    <rect x="952" y="226" width="80" height="40" rx="20" fill="#ffffff" fill-opacity=".06" stroke="#ffffff" stroke-opacity=".7" stroke-width="2"/>
+    <text x="992" y="252" font-size="18" font-weight="600" fill="#ffffff">No</text>
+  </g>
+  <path d="M724 326 h436 v1 a9 9 0 0 1 -9 5 h-418 a9 9 0 0 1 -9 -5 z" fill="#00caff" filter="url(#glow)"/>
 </svg>
